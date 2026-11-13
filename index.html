@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trắc Nghiệm Tư Tưởng Hồ Chí Minh (Có Nút Kiểm Tra)</title>
+  <style>
+    :root {
+      --primary: #be123c;
+      --primary-hover: #9f1239;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --blue-bg: #eff6ff;
+      --blue-border: #3b82f6;
+      --green-bg: #dcfce7;
+      --green-border: #16a34a;
+      --red-bg: #fee2e2;
+      --red-border: #dc2626;
+      --amber-bg: #fef9c3;
+      --amber-border: #eab308;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #991b1b, #be123c);
+      color: #fff;
+      padding: 18px 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    header h1 { font-size: 1.35rem; margin-bottom: 4px; }
+    header p { font-size: 0.9rem; opacity: 0.92; }
+
+    .app-layout {
+      max-width: 1120px;
+      margin: 20px auto;
+      padding: 0 16px 40px;
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, .btn {
+      padding: 8px 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-check {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+      padding: 9px 18px;
+    }
+    .btn-check:hover:not(:disabled) {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+
+    .btn-outline-active {
+      background: #fff1f2;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .progress-wrap { margin-bottom: 18px; }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #16a34a);
+      transition: width 0.25s ease;
+    }
+
+    .question-card { margin-bottom: 18px; }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .question-text {
+      font-size: 1.07rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .options-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-size: 0.96rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+
+    .option-btn:disabled { cursor: default; }
+
+    .option-key {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .option-btn.selected {
+      background: var(--blue-bg);
+      border-color: var(--blue-border);
+      font-weight: 600;
+    }
+    .option-btn.selected .option-key {
+      background: var(--blue-border);
+      color: #fff;
+    }
+
+    .option-btn.correct {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+      font-weight: 600;
+    }
+    .option-btn.correct .option-key {
+      background: var(--green-border);
+      color: #fff;
+    }
+
+    .option-btn.wrong {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+    }
+    .option-btn.wrong .option-key {
+      background: var(--red-border);
+      color: #fff;
+    }
+
+    .q-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .warn-text {
+      font-size: 0.88rem;
+      color: #b45309;
+      font-weight: 600;
+    }
+
+    .feedback-box {
+      margin-top: 12px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-size: 0.92rem;
+    }
+    .feedback-box.ok {
+      background: var(--green-bg);
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    .feedback-box.err {
+      background: var(--red-bg);
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    .note-box {
+      margin-top: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      color: #854d0e;
+      font-size: 0.86rem;
+    }
+
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Sidebar */
+    .sidebar { position: sticky; top: 16px; }
+    .sidebar h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-pills {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: #f1f5f9;
+    }
+    .pill.ok { background: var(--green-bg); color: #166534; }
+    .pill.err { background: var(--red-bg); color: #991b1b; }
+
+    .q-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .q-dot {
+      height: 34px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .q-dot:hover { background: #f1f5f9; }
+    .q-dot.current { outline: 2px solid var(--primary); outline-offset: 1px; }
+    .q-dot.selected { background: var(--blue-bg); border-color: var(--blue-border); color: #1d4ed8; }
+    .q-dot.correct { background: var(--green-bg); border-color: var(--green-border); color: #166534; }
+    .q-dot.wrong { background: var(--red-bg); border-color: var(--red-border); color: #991b1b; }
+
+    .sidebar-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.87rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    @media (max-width: 880px) {
+      .app-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .q-grid { grid-template-columns: repeat(8, 1fr); max-height: 220px; }
+    }
+
+    @media (max-width: 500px) {
+      .q-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Trắc Nghiệm Tư Tưởng Hồ Chí Minh</h1>
+    <p>Chọn đáp án (có thể đổi lại) → Bấm nút <strong>Kiểm tra</strong> để xem kết quả từng câu</p>
+  </header>
+
+  <div class="app-layout">
+    <!-- Main Area -->
+    <div class="panel">
+      <div class="top-controls">
+        <div class="control-group">
+          <span style="font-size:0.9rem; font-weight:700; color:var(--muted);">Hiển thị:</span>
+          <button id="btnViewSingle" class="btn btn-outline-active" onclick="setViewStyle('single')">Từng câu</button>
+          <button id="btnViewAll" class="btn" onclick="setViewStyle('all')">Tất cả câu</button>
+        </div>
+
+        <div class="control-group">
+          <span id="scoreQuick" style="font-size:0.9rem; font-weight:700; color:#15803d;"></span>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progressText">Đã kiểm tra: 0 / 100 câu</span>
+          <span id="shortcutHint">Phím tắt: 1–4 chọn đáp án • Enter kiểm tra • ← → chuyển câu</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="quizBody"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="panel sidebar">
+      <h3>
+        <span>Bảng câu hỏi</span>
+        <span id="rangeLabel" style="font-size:0.82rem; color:var(--muted);">100 câu</span>
+      </h3>
+
+      <div class="stat-pills">
+        <span id="statCorrect" class="pill ok">Đúng: 0</span>
+        <span id="statWrong" class="pill err">Sai: 0</span>
+        <span id="statRemain" class="pill">Chưa chấm: 100</span>
+      </div>
+
+      <div id="questionGrid" class="q-grid"></div>
+
+      <div class="sidebar-actions">
+        <select id="rangeSelect" onchange="startQuiz()">
+          <option value="all">Tất cả (Câu 1 - 100)</option>
+          <option value="1-50">Phần 1 (Câu 1 - 50)</option>
+          <option value="51-100">Phần 2 (Câu 51 - 100)</option>
+          <option value="random20">Ngẫu nhiên 20 câu</option>
+          <option value="random40">Ngẫu nhiên 40 câu</option>
+        </select>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkShuffleQ" onchange="startQuiz()" />
+          <span>Trộn thứ tự câu hỏi</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="chkShuffleOpt" onchange="startQuiz()" />
+          <span>Trộn đáp án A, B, C, D</span>
+        </label>
+
+        <button id="btnRetryWrongSide" class="btn btn-primary" style="display:none;" onclick="retryWrongQuestions()">
+          Ôn lại các câu làm sai (<span id="wrongCountBadge">0</span>)
+        </button>
+
+        <button class="btn" onclick="startQuiz()">Làm mới tất cả</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const rawQuestions = [
+      { id: 1, q: "“Đảng lấy chủ nghĩa Mác – Lênin và tư tưởng HCM làm nền tảng tư tưởng, kim chỉ nam cho hành động”, câu nói trên lần đầu được ĐCSVN khẳng định tại Đại hội Đảng toàn quốc lần thứ mấy?", options: ["Lần thứ IV (1976)", "Lần thứ V (1981)", "Lần thứ VI (1986)", "Lần thứ VII (1991)"], ans: 3 },
+      { id: 2, q: "Nội dung cốt lõi của tư tưởng HCM là:", options: ["Độc lập dân tộc gắn liền với chủ nghĩa xã hội.", "Giải phóng dân tộc.", "Giải phóng giai cấp.", "Giải phóng con người."], ans: 0 },
+      { id: 3, q: "Nghị quyết 24C/18.65 tôn vinh Chủ tịch HCM là Anh hùng giải phóng dân tộc và Danh nhân văn hoá kiệt xuất được UNESCO thông qua vào năm:", options: ["Năm 1969.", "Năm 1975.", "Năm 1987.", "Năm 1990."], ans: 2 },
+      { id: 4, q: "Một trong những nguồn gốc của tư tưởng HCM là tiếp thu:", options: ["Lòng nhân ái, đức hy sinh của Hồi giáo.", "Các giá trị văn hoá tiến bộ của thời kì Phục hưng.", "Giá trị truyền thống dân tộc.", "Văn hoá Phục hưng."], ans: 2 },
+      { id: 5, q: "Một trong những nguồn gốc của tư tưởng HCM là tiếp thu:", options: ["Tinh hoa văn hoá nhân loại.", "Các giá trị văn hoá tiến bộ của thời kì Phục hưng.", "Toàn bộ tư tưởng của nhà khai sáng.", "Lòng nhân ái, đức hy sinh của Hồi giáo."], ans: 0 },
+      { id: 6, q: "Điếu văn của Ban chấp hành Trung ương Đảng Lao động VN năm 1969 khẳng định: “Dân tộc ta, nhân dân ta, non sông đất nước ta đã sinh ra HỒ CHỦ TỊCH, người anh hùng dân tộc vĩ đại, và chính Người đã làm... dân tộc ta, nhân dân ta và non sông đất nước ta”. Từ còn thiếu là:", options: ["Nổi tiếng.", "Nâng tầm.", "Rạng danh.", "Rạng rỡ."], ans: 3 },
+      { id: 7, q: "Ngày 21/6/1925, tờ báo do HCM sáng lập xuất bản số đầu tiên, đánh dấu sự ra đời của nền báo chí cách mạng VN. Tờ báo đó là:", options: ["Báo Thanh niên.", "Báo Người cùng khổ (Le Paria).", "Báo Nhân dân.", "Báo Tuổi trẻ."], ans: 0 },
+      { id: 8, q: "“Luận cương của V. I. Lênin làm cho tôi rất cảm động, phấn khởi, sáng tỏ, tin tưởng biết bao. Tôi vui mừng đến phát khóc lên. Ngồi một mình trong buồng mà tôi nói to lên như đang nói trước quần chúng đông đảo: Hỡi ... bị đoạ đày đau khổ, đây là cái cần thiết cho chúng ta, đây là con đường giải phóng của chúng ta”. Từ còn thiếu là:", options: ["Nhân dân.", "Người dân.", "Đồng bào.", "Anh em."], ans: 2 },
+      { id: 9, q: "Giai đoạn tìm tòi con đường cứu nước, giải phóng dân tộc Chủ tịch HCM được tính từ:", options: ["1890 – 1911.", "1911 – 1920.", "1921 – 1930.", "1930 – 1941."], ans: 1 },
+      { id: 10, q: "Giai đoạn hình thành cơ bản tư tưởng về con đường cách mạng VN của Chủ tịch HCM được tính từ:", options: ["1911 – 1920.", "1921 – 1930.", "1930 – 1941.", "1941 – 1969."], ans: 1 },
+      { id: 11, q: "Giai đoạn hình thành tư tưởng yêu nước và chí hướng cứu nước của Chủ tịch HCM được tính từ:", options: ["1890 – 1911.", "1911 – 1920.", "1921 – 1930.", "1930 – 1941."], ans: 0 },
+      { id: 12, q: "Giai đoạn vượt qua thử thách, kiên trì giữ vững lập trường cách mạng của Chủ tịch HCM được tính từ:", options: ["1911 – 1920.", "1921 – 1930.", "1930 – 1941.", "1941 – 1969."], ans: 2 },
+      { id: 13, q: "Giai đoạn tư tưởng HCM tiếp tục phát triển hoàn thiện được tính từ:", options: ["1911 – 1920.", "1921 – 1930.", "1930 – 1941.", "1941 – 1969."], ans: 3 },
+      { id: 14, q: "Nguồn gốc quyết định bản chất tư tưởng HCM là:", options: ["Giá trị truyền thống dân tộc.", "Chủ nghĩa Mác – Lênin.", "Tinh hoa văn hoá nhân loại.", "Phẩm chất cá nhân HCM."], ans: 1 },
+      { id: 15, q: "Năm 1925, HCM đã cải tổ Tâm Tâm xã thành tổ chức nào?", options: ["Hội VN Cách mạng thanh niên.", "Đảng Phục Việt.", "Đảng Hưng Nam.", "VN Quốc dân Đảng."], ans: 0 },
+      { id: 16, q: "Trong Thư gửi các bạn thanh niên ngày 17/8/1947, Chủ tịch HCM viết: “Thanh niên là ... của nhà nước. Thật vậy nước nhà thịnh hay suy, yếu hay mạnh một phần lớn là do các thanh niên”. Điền từ còn thiếu:", options: ["Người chủ tương lai.", "Thế hệ tương lai.", "Lực lượng hùng hậu.", "Lực lượng cách mạng."], ans: 0 },
+      { id: 17, q: "Lãnh tụ Nguyễn Ái Quốc đi tìm đường cứu nước khi nào?", options: ["Ngày 5/6/1910.", "Ngày 6/5/1911.", "Ngày 5/6/1911.", "Ngày 19/5/1911."], ans: 2 },
+      { id: 18, q: "Khi xuống con tàu Latuso Torevin đi tìm đường cứu nước, Bác Hồ lấy tên gọi là:", options: ["Nguyễn Sinh Cung.", "Nguyễn Tất Thành.", "Nguyễn Ái Quốc.", "Văn Ba."], ans: 3 },
+      { id: 19, q: "Hoàn thành câu nói nổi tiếng của Chủ tịch HCM: “Non sông VN có trở nên tươi đẹp hay không, dân tộc VN có bước tới đài vinh quang để sánh vai với các cường quốc năm châu hay không, chính là nhờ ...”.", options: ["Một công lớn học tập của các em.", "Một phần lớn ở công học tập của các em.", "Một phần lớn công học tập của em.", "Một phần công lớn học tập của các em."], ans: 1 },
+      { id: 20, q: "Nguyễn Ái Quốc đọc “Sơ thảo lần thứ nhất Luận cương về những vấn đề dân tộc và vấn đề thuộc địa” của Lênin khi nào? Ở đâu?", options: ["7/1920 – Liên Xô.", "7/1920 – Pháp.", "7/1920 – Trung Quốc.", "7/1920 – Anh."], ans: 1 },
+      { id: 21, q: "Khi giải thích về con đường đến với Chủ nghĩa Mác – Lênin, Chủ tịch HCM viết: “Lúc đầu, chính là ... chứ chưa phải chủ nghĩa cộng sản đã đưa tôi tin theo Lênin, tin theo Quốc tế thứ ba”.", options: ["Chủ nghĩa Mác.", "Lòng yêu nước.", "Chủ nghĩa dân tộc.", "Chủ nghĩa yêu nước."], ans: 3 },
+      { id: 22, q: "Sau 30 năm tìm đường cứu nước, Lãnh tụ Nguyễn Ái Quốc đã trở về Tổ quốc vào ngày:", options: ["Ngày 28/01/1941.", "Ngày 08/02/1943.", "Ngày 28/01/1942.", "Ngày 08/03/1944."], ans: 0 },
+      { id: 23, q: "Hoàn thành luận điểm nổi tiếng của Chủ tịch HCM: “Nếu nước được ... mà dân không hưởng hạnh phúc tự do, thì ... cũng chẳng có nghĩa lý gì”.", options: ["Độc lập.", "Tự do.", "Giải phóng.", "Hoà bình."], ans: 0 },
+      { id: 24, q: "Theo HCM, độc lập, tự do:", options: ["Tạo hoá ban cho con người.", "Trách nhiệm của các nước lớn phải đảm bảo cho các nước nhỏ.", "Mong muốn của các dân tộc.", "Quyền thiêng liêng, bất khả xâm phạm của tất cả các dân tộc."], ans: 3 },
+      { id: 25, q: "Chủ tịch HCM đã từng dạy học ở ngôi trường nào?", options: ["Trường Tiểu học Vinh.", "Trường Pháp Việt Đông Ba (Huế).", "Trường Quốc học Huế.", "Trường Dục Thanh (Phan Thiết)."], ans: 3 },
+      { id: 26, q: "Theo HCM, cách mạng giải phóng dân tộc muốn thắng lợi phải:", options: ["Đi theo con đường của các bậc tiền bối.", "Đi theo con đường của cách mạng Pháp.", "Đi theo con đường cách mạng vô sản.", "Đi theo con đường Cách mạng Mỹ."], ans: 2 },
+      { id: 27, q: "Cách mạng giải phóng dân tộc muốn thắng lợi phải:", options: ["Có nhiều người giỏi.", "Có Đảng của giai cấp công nhân lãnh đạo.", "Có một cá nhân xuất sắc lãnh đạo.", "Tất cả đều đúng."], ans: 1 },
+      { id: 28, q: "Cách mạng giải phóng dân tộc là sự nghiệp đoàn kết của:", options: ["Giai cấp công nhân.", "Giai cấp công nhân và nông dân.", "Toàn dân, trên cơ sở liên minh công – nông.", "Các dân tộc thuộc địa."], ans: 2 },
+      { id: 29, q: "Cách mạng giải phóng dân tộc muốn giành được thắng lợi cần phải:", options: ["Tiến hành chủ động và sáng tạo.", "Dựa vào sự thắng lợi ở các nước thuộc địa khác.", "Dựa vào thắng lợi ở chính quốc gia.", "Dựa vào sự giúp đỡ của các nước."], ans: 0 },
+      { id: 30, q: "Cách mạng giải phóng dân tộc muốn giành được thắng lợi phải:", options: ["Ám sát những tên ác ôn.", "Sử dụng bạo lực cách mạng.", "Tiến hành đấu tranh nghị trường.", "Thực hiện đấu tranh ôn hoà."], ans: 1 },
+      { id: 31, q: "Bạo lực cách mạng theo tư tưởng HCM là:", options: ["Đấu tranh chính trị.", "Đấu tranh vũ trang.", "Kết hợp đấu tranh chính trị với đấu tranh vũ trang.", "Thực hiện đấu tranh ôn hoà."], ans: 2 },
+      { id: 32, q: "“Trong lúc này, thời cơ thuận lợi đã tới. Dù hy sinh tới đâu, dù phải đốt cháy cả dãy Trường Sơn cũng phải kiên quyết giành cho được độc lập”. HCM đã chỉ thị điều đó cho đồng chí nào?", options: ["Võ Nguyên Giáp.", "Trường Chinh.", "Phạm Văn Đồng.", "Vũ Kỳ."], ans: 0 },
+      { id: 33, q: "Năm 1944, HCM đã ra chỉ thị thành lập Đội:", options: ["Việt Nam Tuyên truyền Giải phóng quân.", "Việt Nam Giải phóng quân.", "Giải phóng quân Việt Nam.", "Việt Nam cứu quốc quân."], ans: 0 },
+      { id: 34, q: "Bản Yêu sách của nhân dân An Nam được Nguyễn Ái Quốc gửi tới Hội nghị Vecxay vào thời gian nào?", options: ["Ngày 18/06/1917.", "Ngày 18/06/1919.", "Ngày 18/06/1920.", "Ngày 18/06/1921."], ans: 1 },
+      { id: 35, q: "HCM đã dùng hình tượng nào để nói về chủ nghĩa đế quốc?", options: ["Con đỉa hai vòi.", "Con bạch tuộc.", "Con chim đại bàng.", "Con rắn độc."], ans: 0 },
+      { id: 36, q: "Năm 1946, trả lời phỏng vấn báo chí, Chủ tịch HCM đã khẳng định ham muốn tột bậc của Người là:", options: ["Nước ta được hoàn toàn độc lập.", "Dân ta được hoàn toàn tự do.", "Đồng bào ai cũng có ăn, áo mặc, ai cũng được học hành.", "Tất cả đáp án."], ans: 3 },
+      { id: 37, q: "“Đồng bào Nam Bộ là dân nước VN. Sông có thể cạn, núi có thể mòn, song chân lý đó không bao giờ thay đổi”. Luận điểm trên được Chủ tịch HCM đề cập đến trong tác phẩm:", options: ["Thư gửi Uỷ ban nhân dân các Kỳ, tỉnh, huyện, và làng 1945.", "Thư gửi Đồng bào Nam Bộ 1946.", "Sửa đổi lối làm việc 1947.", "Di chúc 1969."], ans: 1 },
+      { id: 38, q: "Điền từ còn thiếu vào chỗ trống theo tư tưởng HCM: “Cách mệnh trước hết phải có đảng cách mệnh, để trong thì ... dân chúng, ngoài thì liên lạc với các dân tộc bị áp bức và vô sản giai cấp mọi nơi”.", options: ["Tập hợp và lãnh đạo.", "Vận động và tổ chức.", "Tập hợp và giác ngộ.", "Tổ chức và lãnh đạo."], ans: 1 },
+      { id: 39, q: "Năm 1923, một nhà thơ Liên Xô khi gặp Bác Hồ đã viết: “Từ ... toả ra một nền văn hoá, không phải là văn hoá Châu Âu, mà có lẽ là một nền văn hoá của tương lai”. Người ta gọi Bác Hồ khi ấy là:", options: ["Văn Ba.", "Nguyễn Tất Thành.", "Nguyễn Ái Quốc.", "Hồ Chí Minh."], ans: 2 },
+      { id: 40, q: "Theo tư tưởng HCM:", options: ["Cách mạng giải phóng dân tộc phụ thuộc hoàn toàn vào CMVS ở chính quốc.", "CMGPDT cùng diễn ra và giành thắng lợi đồng thời với CMVS ở chính quốc.", "CMGPDT có khả năng nổ ra và giành thắng lợi trước CMVS ở chính quốc.", "CMGPDT cần được tiến hành chủ động, sáng tạo và có khả năng thắng lợi trước CMVS ở chính quốc."], ans: 3 },
+      { id: 41, q: "Theo HCM: “Công cuộc giải phóng anh em chỉ có thể thực hiện bằng sự nỗ lực của ...”:", options: ["Giai cấp công nhân.", "Nhân dân lao động.", "Bản thân anh em.", "Cả dân tộc."], ans: 2 },
+      { id: 42, q: "Luận điểm nổi tiếng: “Không có gì quý hơn độc lập, tự do” được HCM nói trong:", options: ["Đường kách mệnh 1927.", "Tuyên ngôn độc lập 1945.", "Lời kêu gọi toàn quốc kháng chiến 1946.", "Lời kêu gọi đồng bào, chiến sĩ cả nước 1966."], ans: 3 },
+      { id: 43, q: "Năm 1951, HCM chỉ rõ mục đích của Đảng Lao động VN có thể gồm trong 8 chữ là:", options: ["Thực hiện đại đoàn kết toàn dân tộc.", "Đoàn kết toàn dân, xây dựng đất nước.", "Đoàn kết toàn dân, phụng sự Tổ quốc.", "Hoà bình, độc lập, thống nhất, giàu mạnh."], ans: 2 },
+      { id: 44, q: "“Đảng có vững cách mạng mới thành công, cũng như người cầm lái có vững thuyền mới chạy”. Đó là khẳng định của HCM trong:", options: ["Đường cách mệnh 1927.", "Tuyên ngôn độc lập 1945.", "Lời kêu gọi toàn quốc kháng chiến 1946.", "Lời kêu gọi đồng bào, chiến sĩ cả nước 1966."], ans: 0 },
+      { id: 45, q: "Trước khi rời bến cảng Nhà Rồng, Nguyễn Tất Thành đã nói với bạn của mình: “Tôi muốn đi ra nước ngoài, xem nước Pháp và các nước khác. Sau khi xem xét họ làm thế nào, tôi sẽ ...”. Điền từ còn thiếu:", options: ["Truyền đạt lại cho đồng bào chúng ta.", "Trở về giúp đồng bào chúng ta.", "Lên kế hoạch giúp đồng bào chúng ta.", "Chiến đấu chống lại kẻ thù chúng ta."], ans: 1 },
+      { id: 46, q: "Trong cuộc họp Hội đồng Chính phủ ngày 29/12/1966, Chủ tịch HCM nêu lên luận điểm: “Không sợ ..., chỉ sợ không công bằng; Không sợ ..., chỉ sợ lòng dân không yên”. Điền từ còn thiếu:", options: ["Đói ... nghèo.", "Thiếu ... nhiều.", "Thiếu ... nghèo.", "Yếu ... thừa."], ans: 2, note: "Đã chỉnh chuẩn từ đề gốc (ảnh gốc tô nhầm A). Câu chuẩn: “Không sợ thiếu, chỉ sợ không công bằng; Không sợ nghèo, chỉ sợ lòng dân không yên”." },
+      { id: 47, q: "Theo HCM, muốn xây dựng chủ nghĩa xã hội thì trước hết cần có:", options: ["Khoa học kỹ thuật hiện đại.", "Lực lượng sản xuất phát triển.", "Cơ sở vật chất kĩ thuật.", "Những con người xã hội chủ nghĩa."], ans: 3 },
+      { id: 48, q: "Theo Tư tưởng HCM, động lực chủ yếu của sự phát triển đất nước là:", options: ["Con người cá nhân.", "Đại đoàn kết dân tộc.", "Sự giúp đỡ của nước ngoài.", "Đoàn kết quốc tế."], ans: 1 },
+      { id: 49, q: "HCM đã chỉ ra các lực cản đi lên chủ nghĩa xã hội, đó là: Chủ nghĩa thực dân, thói quen truyền thống lạc hậu và ...", options: ["Giặc đói.", "Giặc dốt.", "Giặc ngoại xâm.", "Chủ nghĩa cá nhân."], ans: 3 },
+      { id: 50, q: "Theo tư tưởng HCM, chế độ chính trị mà chúng ta xây dựng là chế độ:", options: ["Do giai cấp công nhân làm chủ.", "Do giai cấp nông dân làm chủ.", "Do nhân dân lao động làm chủ.", "Do Đảng Cộng sản làm chủ."], ans: 2 },
+      { id: 51, q: "Theo HCM, nền kinh tế mà chúng ta xây dựng phải được tạo lập trên cơ sở:", options: ["Nền nông nghiệp hiện đại.", "Nền công nghiệp hiện đại.", "Khoa học kĩ thuật tiên tiến.", "Tất cả đáp án."], ans: 3 },
+      { id: 52, q: "Theo HCM, động lực quan trọng và bao trùm nhất của CNXH là:", options: ["Vốn.", "Tài nguyên thiên nhiên.", "Con người.", "Khoa học kĩ thuật."], ans: 2 },
+      { id: 53, q: "“Các vua Hùng đã có công dựng nước, Bác cháu ta phải cùng nhau giữ lấy nước”. Câu nói trên được Chủ tịch HCM nói vào ngày, tháng, năm nào?", options: ["Ngày 02/9/1945.", "Ngày 03/9/1945.", "Ngày 19/5/1954.", "Ngày 19/9/1954."], ans: 3, note: "Đã chỉnh năm chuẩn lịch sử (ảnh gốc gõ nhầm thành 19/9/1945). Bác Hồ nói câu này tại Đền Hùng ngày 19/9/1954." },
+      { id: 54, q: "Muốn phát huy động lực của CNXH, theo HCM cần phải chống:", options: ["Chủ nghĩa cá nhân, tham ô, lãng phí, quan liêu.", "Chia rẽ, bè phía, mất đoàn kết, vô kỷ luật, chủ quan, bảo thủ, giáo điều, lười biếng.", "Chủ nghĩa đế quốc thực dân.", "Tất cả."], ans: 3 },
+      { id: 55, q: "Kế thừa quan điểm của chủ nghĩa Mác-Lênin, có mấy con đường quá độ lên CNXH?", options: ["2 con đường.", "3 con đường.", "4 con đường.", "5 con đường."], ans: 0 },
+      { id: 56, q: "Theo Hồ Chí Minh, đặc điểm cơ bản nhất của nước ta trong thời kì quá độ là:", options: ["Từ một nước nông nghiệp lạc hậu tiến thẳng lên chủ nghĩa xã hội không trải qua giai đoạn phát triển tư bản chủ nghĩa.", "Bị chiến tranh tàn phá nặng nề.", "Từ một nước thuộc địa nửa phong kiến.", "Tất cả đều đúng."], ans: 0 },
+      { id: 57, q: "Chủ tịch HCM về thăm HP lần đầu tiên khi nào?", options: ["20/10/1941.", "20/10/1944.", "20/10/1945.", "20/10/1946."], ans: 3 },
+      { id: 58, q: "Nội dung nào sau đây được coi là vấn đề “cốt tử” trong xây dựng Đảng?", options: ["Xây dựng và thực hiện nghị quyết.", "Xây dựng và phát triển Đảng viên.", "Củng cố lập trường chính trị.", "Xây dựng đường lối chính trị."], ans: 3 },
+      { id: 59, q: "Theo HCM khi thực hiện bước đi trong TKQĐ, chúng ta phải thực hiện phương châm:", options: ["Tuần tự, dần dần, từ thấp đến cao.", "Tiến nhanh, mạnh, vững chắc lên chủ nghĩa xã hội.", "Tránh tư tưởng chủ quan, nóng vội, phù hợp với thực tiễn, vừa lòng dân.", "Tất cả đáp án."], ans: 3 },
+      { id: 60, q: "Theo HCM, về bước đi trong thời kì quá độ, chúng ta phải:", options: ["Đi theo bước đi của các nước xã hội chủ nghĩa.", "Căn cứ vào đặc điểm lịch sử cụ thể của nước ta, từ đó có bước đi phù hợp.", "Căn cứ vào đặc điểm lịch sử cụ thể của nước ta, từ đó có bước đi phù hợp, đi bước nào vững chắc bước ấy.", "Đi theo các nước tư bản."], ans: 2 },
+      { id: 61, q: "Theo HCM, ĐCSVN là sản phẩm của sự kết hợp giữa:", options: ["Chủ nghĩa Mác – Lênin với phong trào công nhân.", "Chủ nghĩa Mác – Lênin với phong trào nông dân.", "Chủ nghĩa Mác – Lênin với phong trào yêu nước.", "Chủ nghĩa Mác – Lênin với phong trào công nhân và phong trào yêu nước."], ans: 3 },
+      { id: 62, q: "Tác phẩm nào sau đây không phải của HCM:", options: ["Kháng chiến nhất định thắng lợi.", "Bản án chế độ thực dân Pháp.", "Đường kách mệnh.", "Đời sống mới."], ans: 0 },
+      { id: 63, q: "ĐCSVN là Đảng của giai cấp công nhân, của nhân dân lao động và của toàn dân tộc. Điều này khẳng định:", options: ["Vai trò của Đảng.", "Lợi ích của Đảng.", "Lý tưởng của Đảng.", "Bản chất của Đảng."], ans: 3 },
+      { id: 64, q: "Nguyên tắc xây dựng Đảng này được HCM coi như là một “thang thuốc” để chữa các “bệnh” trong Đảng. Đó là nguyên tắc:", options: ["Tập trung dân chủ.", "Kỷ luật nghiêm minh tự giác.", "Tự phê bình và phê bình.", "Đoàn kết thống nhất trong Đảng."], ans: 2 },
+      { id: 65, q: "Theo tư tưởng HCM, luận điểm ĐCS là nhân tố quyết định hàng đầu để đưa cách mạng VN đi đến thắng lợi là xác định:", options: ["Quyền lãnh đạo của Đảng.", "Vai trò lãnh đạo của Đảng.", "Nhiệm vụ của Đảng.", "Mục đích của Đảng."], ans: 1 },
+      { id: 66, q: "Trong thư gửi các cán bộ, thầy cô giáo và học sinh nhân dịp năm học mới, Chủ tịch HCM viết: “Dù khó khăn đến đâu cũng phải tiếp tục thi đua dạy tốt và học tốt”. Năm đó là:", options: ["1945.", "1950.", "1968.", "1969."], ans: 2 },
+      { id: 67, q: "Khi xác định lực lượng của khối đại đoàn kết dân tộc, Chủ tịch HCM chỉ rõ: “Ta đoàn kết để đấu tranh cho thống nhất và độc lập của Tổ quốc, Ta còn phải đoàn kết để xây dựng nước nhà. Ai có tài, có đức, có sức, có ... thì ta đoàn kết với họ”. Hoàn thành phần còn thiếu:", options: ["Lòng phụng sự Tổ quốc và phục vụ nhân dân.", "Đạo đức trong sáng.", "Ý chí cách mạng.", "Lòng yêu nước."], ans: 0, note: "Đã chỉnh chuẩn từ đề gốc (ảnh gốc tô nhầm C). Nguyên văn: “...có lòng phụng sự Tổ quốc và phục vụ nhân dân thì ta đoàn kết với họ”." },
+      { id: 68, q: "Trong tư tưởng HCM, đại đoàn kết dân tộc:", options: ["Là vấn đề cơ bản nhất.", "Là vấn đề sống còn của cách mạng.", "Là vấn đề có ý nghĩa chiến lược, quyết định thành công của cách mạng.", "Là vấn đề số một của cách mạng."], ans: 2 },
+      { id: 69, q: "Trong tư tưởng HCM, đại đoàn kết dân tộc:", options: ["Là mục tiêu của cách mạng.", "Là nhiệm vụ hàng đầu của cách mạng.", "Là vấn đề số một của cách mạng.", "Là mục tiêu, nhiệm vụ hàng đầu của Đảng, của dân tộc."], ans: 3 },
+      { id: 70, q: "HCM nhấn mạnh: “Điểm này mà thực hiện tốt thì đẻ ra con cháu đều tốt”. Điểm đó là:", options: ["Đại đoàn kết toàn dân tộc.", "Lòng yêu nước nồng nàn.", "Tinh thần chiến đấu anh dũng.", "Sự giúp đỡ của bè bạn thế giới."], ans: 0 },
+      { id: 71, q: "Trong tư tưởng HCM, nền tảng của khối đại đoàn kết dân tộc là:", options: ["Liên minh công – nông.", "Liên minh công – nông, lao động trí óc.", "Liên minh công – nông và tư sản.", "Liên minh công – nông và địa chủ."], ans: 1 },
+      { id: 72, q: "Trong Tuyên ngôn độc lập, HCM đã khẳng định quyết tâm của nhân dân ta: “Toàn thể dân tộc VN quyết đem ... để giữ vững quyền tự do, độc lập ấy”. Điền vào chỗ trống:", options: ["Toàn bộ sức lực.", "Tất cả tinh thần và lực lượng.", "Tính mạng và của cải.", "Tất cả tinh thần và lực lượng, tính mạng và của cải."], ans: 3 },
+      { id: 73, q: "Theo tư tưởng HCM, ĐCSVN vừa là người lãnh đạo, vừa là người ... của dân. Từ còn thiếu là:", options: ["Giúp việc.", "Chỉ huy.", "Đầy tớ.", "Bảo vệ."], ans: 2 },
+      { id: 74, q: "“Dân vận khéo, việc gì cũng thành công”. Luận điểm trên được HCM đề cập đến trong tác phẩm:", options: ["Dân vận.", "Sửa đổi lối làm việc.", "Đạo đức cách mạng.", "Di chúc."], ans: 0 },
+      { id: 75, q: "Chủ tịch HCM nhấn mạnh: “Đảng ta là một Đảng cầm quyền. Mỗi đảng viên và cán bộ phải thật sự thấm nhuần đạo đức cách mạng, thật sự cần kiệm liêm chính, chí công vô tư”. Luận điểm trên được HCM đề cập đến trong tác phẩm nào:", options: ["Đường kách mệnh 1927.", "Đời sống mới 1947.", "Đạo đức cách mạng 1958.", "Di chúc 1969."], ans: 3 },
+      { id: 76, q: "Điền từ vào chỗ trống theo tư tưởng HCM về chính sách ngoại giao của VN sau khi tuyên bố độc lập: “Làm bạn với tất cả ... và không gây thù oán với một ai”", options: ["Các dân tộc.", "Các nước xã hội chủ nghĩa.", "Mọi nước dân chủ.", "Các quốc gia khác."], ans: 2 },
+      { id: 77, q: "Khi nói về tinh thần đoàn kết quốc tế, HCM đã viết: “Quan sơn muôn dặm một nhà, ... đều là anh em”. Điền từ vào chỗ trống.", options: ["Lao động thế giới.", "Bốn phương vô sản.", "Vàng đen trắng đỏ.", "Nhân dân thế giới."], ans: 1 },
+      { id: 78, q: "Chọn phương án đúng nhất điền vào chỗ trống để hoàn thiện câu nói của chủ tịch HCM: “Thi đua là yêu nước, yêu nước là thi đua. Và những người thi đua là những người ...”", options: ["Giỏi nhất.", "Hăng hái nhất.", "Yêu nước nhất.", "Cách mạng nhất."], ans: 2 },
+      { id: 79, q: "Trong phiên họp đầu tiên của Chính phủ lâm thời nước VN Dân chủ CH, Chủ tịch HCM đã nêu ra 6 nhiệm vụ cấp bách cần phải giải quyết. Phiên họp đó diễn ra vào:", options: ["Ngày 02/9/1945.", "Ngày 03/9/1945.", "Ngày 04/9/1945.", "Ngày 05/9/1945."], ans: 1 },
+      { id: 80, q: "Theo HCM, “Nước ta là nước dân chủ, nghĩa là ...”:", options: ["Nhà nước do nhân dân làm chủ.", "Dân điều hành đất nước.", "Dân có mọi quyền hành.", "Dân quyết định mọi vấn đề của đất nước."], ans: 0 },
+      { id: 81, q: "Nhà nước của dân theo tư tưởng HCM nghĩa là:", options: ["Mọi quyền lực trong nhà nước và trong xã hội đều thuộc về nhân dân.", "Mọi công việc của nhà nước do dân quyết định.", "Đại biểu của nhà nước do dân bầu ra.", "Tất cả đều đúng."], ans: 0 },
+      { id: 82, q: "Nhà nước do dân theo tư tưởng HCM:", options: ["Đại biểu của nhà nước do dân lựa chọn.", "Dân ủng hộ, giúp đỡ, đóng thuế để nhà nước chi tiêu, hoạt động.", "Dân có quyền kiểm soát, giám sát, bãi miễn nếu đại biểu không làm tròn sự uỷ thác của dân.", "Tất cả đều đúng."], ans: 3 },
+      { id: 83, q: "Nhà nước vì dân theo tư tưởng HCM là:", options: ["Phục vụ vì lợi ích và nguyện vọng chính đáng của nhân dân.", "Mọi chủ trương, chính sách, pháp luật đều xuất phát từ lợi ích của dân.", "Nhà nước trong sạch, không có bất cứ một đặc quyền, đặc lợi nào.", "Tất cả đều đúng."], ans: 3 },
+      { id: 84, q: "Một nhà nước pháp quyền có hiệu lực pháp lý mạnh mẽ theo tư tưởng HCM là:", options: ["Nhà nước hợp hiến, hợp pháp.", "Nhà nước thượng tôn pháp luật.", "Nhà nước pháp quyền nhân nghĩa.", "Tất cả đều đúng."], ans: 3 },
+      { id: 85, q: "“Không có việc gì khó/ Chỉ sợ lòng không bền/ Đào núi và lấp biển/ Quyết chí ắt làm nên”. Câu thơ nổi tiếng trên được HCM nói lần đầu vào:", options: ["Năm 1945.", "Năm 1946.", "Năm 1950.", "Năm 1969."], ans: 2 },
+      { id: 86, q: "Bàn về vai trò của Sức mạnh và Thể dục, Chủ tịch HCM viết: “Giữ gìn dân chủ, xây dựng nước nhà, gây đời sống mới, việc gì cũng cần có sức khoẻ mới thành công. Mỗi một người dân yếu ớt, tức là cả nước yếu ớt, mỗi một người dân khoẻ mạnh tức là cả nước khoẻ mạnh .... Dân cường thì quốc thịnh”. Luận điểm này được đăng trên:", options: ["Báo Cứu quốc, ngày 27/3/1946.", "Báo Sự thật, ngày 27/3/1948.", "Báo Nhân dân, ngày 27/3/1954.", "Báo Thanh niên, ngày 27/3/1969."], ans: 0 },
+      { id: 87, q: "Trong tư tưởng HCM, đạo đức có vai trò:", options: ["Là nền tảng lý luận của người cách mạng.", "Là gốc của người cách mạng, là nền tảng tinh thần của xã hội.", "Là định hướng lý tưởng của người cách mạng.", "Là tư tưởng của người cách mạng."], ans: 1 },
+      { id: 88, q: "Theo HCM, muốn xây dựng đạo đức phải thực hiện nguyên tắc:", options: ["Nói đi đôi với làm.", "Xây đi đôi với chống.", "Tu dưỡng đạo đức suốt đời.", "Tất cả đều đúng."], ans: 3 },
+      { id: 89, q: "Điền vào phần còn thiếu theo quan điểm HCM: “Trời có bốn mùa Xuân, Hạ, Thu, Đông. Đất có bốn phương Đông, Tây, Nam, Bắc. Người có ...”:", options: ["Bốn đức Cần, Kiệm, Liêm, Chính.", "Tinh thần quốc tế trong sáng.", "Phẩm chất trung với nước, hiếu với dân.", "Yêu thương con người, sống có tình nghĩa."], ans: 0 },
+      { id: 90, q: "Hoàn thành luận điểm của HCM: “Trong bầu trời không có gì quý bằng .... Trong thế giới không gì mạnh bằng lực lượng đoàn kết của ...”:", options: ["Bạn bè.", "Nhân dân.", "Tình cảm.", "Con người."], ans: 1 },
+      { id: 91, q: "Trong Bài nói tại lớp bồi dưỡng cán bộ lãnh đạo cấp huyện ngày 18/1/1967, HCM khẳng định: “Dễ mười lần không dân cũng ..., khó trăm lần dân liệu cũng xong”. Từ còn thiếu là:", options: ["Mệt.", "Khổ.", "Chịu.", "Bỏ."], ans: 2 },
+      { id: 92, q: "Trong thư gửi các hoạ sĩ nhân triển lãm hội hoạ 1951, Chủ tịch HCM khẳng định: “Văn hoá nghệ thuật cũng là một mặt trận. Anh chị em là chiến sĩ trên mặt trận ấy”. Quan điểm trên của HCM muốn đề cập đến:", options: ["Vai trò của văn hoá nghệ thuật.", "Đặc điểm của nghệ sĩ.", "Vai trò của nhà nước.", "Tất cả đều đúng."], ans: 0 },
+      { id: 93, q: "Ngày 28/11/1959, Chủ tịch HCM viết trên báo Nhân dân và phát động:", options: ["Tết thiếu nhi.", "Tết trồng cây.", "Tết Đoan ngọ.", "Tất cả đáp án."], ans: 1 },
+      { id: 94, q: "Năm 1923, tạp chí Ogoniok (Ngọn lửa nhỏ) số 39 đã đăng bài về NAQ, trong đó viết: “Từ NAQ toả ra một nền văn hoá, không phải là văn hoá Châu Âu mà có lẽ là văn hoá của tương lai”. Tác giả của nhận xét đó là:", options: ["Nhà văn Sơn Tùng.", "Nhà nghiên cứu Épghenhi Cobelep.", "Nhà thơ Xô viết Ôxip Mandenxtam.", "V.I.Lênin."], ans: 2 },
+      { id: 95, q: "Trong thư gửi thanh niên và nhi đồng toàn quốc nhân dịp Tết sắp đến, Chủ tịch HCM viết: “Một năm ... từ mùa xuân. Một đời ... từ tuổi trẻ. Tuổi trẻ là mùa xuân của xã hội”. Từ còn thiếu là:", options: ["Bắt đầu.", "Khởi đầu.", "Bước đầu.", "Mở đầu."], ans: 1 },
+      { id: 96, q: "Theo HCM: “Sức có mạnh mới gánh được nặng và đi được xa. Người cách mạng phải có ... làm nền tảng mới hoàn thành được nhiệm vụ cách mạng vẻ vang”.", options: ["Sức khoẻ.", "Tài năng.", "Tài năng và đức độ.", "Đạo đức cách mạng."], ans: 3 },
+      { id: 97, q: "Theo HCM: “Văn hoá phải soi đường cho ... đi”", options: ["Dân tộc.", "Toàn dân.", "Quốc dân.", "Mọi người."], ans: 2 },
+      { id: 98, q: "Chủ tịch HCM đã dạy: “Học để làm việc, ..., làm cán bộ”. Từ còn thiếu là:", options: ["Làm cách mạng.", "Phục vụ nhân dân.", "Có tri thức.", "Làm người."], ans: 3 },
+      { id: 99, q: "Khi nói về sự tu dưỡng đạo đức cách mạng, Chủ tịch HCM đưa ra hình ảnh: “Ngọc càng mài càng ..., vàng càng luyện càng ...”. Từ còn thiếu là:", options: ["Tốt ... bền.", "Sáng ... trong.", "Đắt ... cao.", "Quý ... bền."], ans: 1 },
+      { id: 100, q: "Chỉ thị 05-CT/TW về “Đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách HCM” được Bộ Chính trị ban hành vào ngày:", options: ["Ngày 15/5/2016.", "Ngày 19/5/2016.", "Ngày 19/5/2017.", "Ngày 02/9/2018."], ans: 0 }
+    ];
+
+    const labels = ["A", "B", "C", "D"];
+    let quizList = [];
+    let userAnswers = {};
+    let checkedMap = {};
+    let warnMap = {};
+    let currentIndex = 0;
+    let viewStyle = "single"; // "single" | "all"
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function prepareQuestion(raw, shuffleOpt) {
+      const hasAllOption = raw.options.some(o => o.toLowerCase().startsWith("tất cả"));
+      if (!shuffleOpt || hasAllOption) {
+        return {
+          id: raw.id,
+          q: raw.q,
+          options: [...raw.options],
+          correctIndex: raw.ans,
+          note: raw.note || ""
+        };
+      }
+      const mapped = raw.options.map((text, idx) => ({ text, isCorrect: idx === raw.ans }));
+      const shuffled = shuffleArray(mapped);
+      return {
+        id: raw.id,
+        q: raw.q,
+        options: shuffled.map(x => x.text),
+        correctIndex: shuffled.findIndex(x => x.isCorrect),
+        note: raw.note || ""
+      };
+    }
+
+    function startQuiz(customRawList = null) {
+      const range = document.getElementById("rangeSelect").value;
+      const shuffleQ = document.getElementById("chkShuffleQ").checked;
+      const shuffleOpt = document.getElementById("chkShuffleOpt").checked;
+
+      let source = customRawList;
+      if (!source) {
+        if (range === "all") source = rawQuestions;
+        else if (range === "1-50") source = rawQuestions.slice(0, 50);
+        else if (range === "51-100") source = rawQuestions.slice(50, 100);
+        else if (range === "random20") source = shuffleArray(rawQuestions).slice(0, 20);
+        else if (range === "random40") source = shuffleArray(rawQuestions).slice(0, 40);
+      }
+
+      if (shuffleQ && !customRawList) source = shuffleArray(source);
+      quizList = source.map(q => prepareQuestion(q, shuffleOpt));
+      userAnswers = {};
+      checkedMap = {};
+      warnMap = {};
+      currentIndex = 0;
+
+      document.getElementById("rangeLabel").textContent = `${quizList.length} câu`;
+      renderAll();
+    }
+
+    function setViewStyle(style) {
+      viewStyle = style;
+      document.getElementById("btnViewSingle").classList.toggle("btn-outline-active", style === "single");
+      document.getElementById("btnViewAll").classList.toggle("btn-outline-active", style === "all");
+      document.getElementById("shortcutHint").style.display = style === "single" ? "inline" : "none";
+      renderAll();
+    }
+
+    // Chỉ chọn đáp án, KHÔNG tự động kiểm tra
+    function selectAnswer(qId, optIdx) {
+      if (checkedMap[qId]) return;
+      userAnswers[qId] = optIdx;
+      delete warnMap[qId];
+      renderAll();
+    }
+
+    // Chỉ kiểm tra khi bấm nút Kiểm tra
+    function checkQuestion(qId) {
+      if (userAnswers[qId] === undefined) {
+        warnMap[qId] = true;
+        renderAll();
+        return;
+      }
+      checkedMap[qId] = true;
+      delete warnMap[qId];
+      renderAll();
+    }
+
+    function retryQuestion(qId) {
+      delete userAnswers[qId];
+      delete checkedMap[qId];
+      delete warnMap[qId];
+      renderAll();
+    }
+
+    function retryWrongQuestions() {
+      const wrongIds = new Set(
+        quizList
+          .filter(item => checkedMap[item.id] && userAnswers[item.id] !== item.correctIndex)
+          .map(item => item.id)
+      );
+      const wrongRaw = rawQuestions.filter(q => wrongIds.has(q.id));
+      if (wrongRaw.length === 0) return;
+      startQuiz(wrongRaw);
+    }
+
+    function goToQuestion(idx) {
+      currentIndex = idx;
+      if (viewStyle === "all") {
+        renderStatsAndGrid();
+        const el = document.getElementById(`q-card-${quizList[idx].id}`);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        renderAll();
+      }
+    }
+
+    function buildQuestionHtml(item, displayIdx) {
+      const chosen = userAnswers[item.id];
+      const isChecked = !!checkedMap[item.id];
+      const showWarn = !!warnMap[item.id];
+
+      const optionsHtml = item.options.map((opt, idx) => {
+        let cls = "option-btn";
+        if (!isChecked) {
+          if (chosen === idx) cls += " selected";
+        } else {
+          if (idx === item.correctIndex) cls += " correct";
+          else if (chosen === idx) cls += " wrong";
+        }
+
+        const disabledAttr = isChecked ? "disabled" : "";
+
+        return `
+          <li>
+            <button class="${cls}" ${disabledAttr} onclick="selectAnswer(${item.id}, ${idx})">
+              <span class="option-key">${labels[idx]}</span>
+              <span>${opt}</span>
+            </button>
+          </li>
+        `;
+      }).join("");
+
+      let actionHtml = "";
+      if (!isChecked) {
+        actionHtml = `
+          <div class="q-actions">
+            <button class="btn btn-check" onclick="checkQuestion(${item.id})">
+              ✓ Kiểm tra
+            </button>
+            ${showWarn ? `<span class="warn-text">Bạn hãy chọn A, B, C hoặc D trước khi kiểm tra!</span>` : ""}
+          </div>
+        `;
+      } else {
+        actionHtml = `
+          <div class="q-actions">
+            <button class="btn" onclick="retryQuestion(${item.id})">↺ Làm lại câu này</button>
+          </div>
+        `;
+      }
+
+      let feedbackHtml = "";
+      if (isChecked) {
+        if (chosen === item.correctIndex) {
+          feedbackHtml = `<div class="feedback-box ok"><strong>✓ Chính xác!</strong> Đáp án đúng là <strong>${labels[item.correctIndex]}</strong>.</div>`;
+        } else {
+          feedbackHtml = `<div class="feedback-box err"><strong>✕ Chưa đúng.</strong> Bạn chọn <strong>${labels[chosen]}</strong>, đáp án đúng là <strong>${labels[item.correctIndex]}</strong>.</div>`;
+        }
+        if (item.note) {
+          feedbackHtml += `<div class="note-box">${item.note}</div>`;
+        }
+      }
+
+      return `
+        <div id="q-card-${item.id}" class="question-card">
+          <div class="question-meta">
+            <span class="badge">Câu ${displayIdx + 1} / ${quizList.length}</span>
+            <span>Mã câu gốc: #${item.id}</span>
+          </div>
+          <div class="question-text">${item.q}</div>
+          <ul class="options-list">${optionsHtml}</ul>
+          ${actionHtml}
+          ${feedbackHtml}
+        </div>
+      `;
+    }
+
+    function renderQuizBody() {
+      const body = document.getElementById("quizBody");
+      if (quizList.length === 0) {
+        body.innerHTML = "<p>Không có câu hỏi nào.</p>";
+        return;
+      }
+
+      if (viewStyle === "single") {
+        const item = quizList[currentIndex];
+        body.innerHTML = `
+          ${buildQuestionHtml(item, currentIndex)}
+          <div class="nav-footer">
+            <button class="btn" onclick="prevQuestion()" ${currentIndex === 0 ? "disabled" : ""}>← Câu trước</button>
+            <span style="font-size:0.9rem; color:var(--muted); font-weight:600;">${currentIndex + 1} / ${quizList.length}</span>
+            <button class="btn btn-primary" onclick="nextQuestion()" ${currentIndex === quizList.length - 1 ? "disabled" : ""}>Câu tiếp →</button>
+          </div>
+        `;
+      } else {
+        body.innerHTML = quizList
+          .map((item, idx) => buildQuestionHtml(item, idx) + (idx < quizList.length - 1 ? '<hr class="divider"/>' : ""))
+          .join("");
+      }
+    }
+
+    function renderStatsAndGrid() {
+      let checkedCount = 0, correct = 0, wrong = 0;
+
+      quizList.forEach(item => {
+        if (checkedMap[item.id]) {
+          checkedCount++;
+          if (userAnswers[item.id] === item.correctIndex) correct++;
+          else wrong++;
+        }
+      });
+
+      const pct = quizList.length ? Math.round((checkedCount / quizList.length) * 100) : 0;
+      document.getElementById("progressText").textContent = `Đã kiểm tra: ${checkedCount} / ${quizList.length} câu (${pct}%)`;
+      document.getElementById("progressFill").style.width = `${pct}%`;
+
+      document.getElementById("scoreQuick").textContent =
+        checkedCount > 0 ? `Tỷ lệ đúng: ${correct}/${checkedCount} (${Math.round((correct / checkedCount) * 100)}%)` : "";
+
+      document.getElementById("statCorrect").textContent = `Đúng: ${correct}`;
+      document.getElementById("statWrong").textContent = `Sai: ${wrong}`;
+      document.getElementById("statRemain").textContent = `Chưa chấm: ${quizList.length - checkedCount}`;
+
+      const retrySide = document.getElementById("btnRetryWrongSide");
+      retrySide.style.display = wrong > 0 ? "block" : "none";
+      document.getElementById("wrongCountBadge").textContent = wrong;
+
+      const grid = document.getElementById("questionGrid");
+      grid.innerHTML = quizList.map((item, idx) => {
+        const chosen = userAnswers[item.id];
+        const isChecked = !!checkedMap[item.id];
+        let cls = "q-dot";
+        if (viewStyle === "single" && idx === currentIndex) cls += " current";
+
+        if (isChecked) {
+          cls += chosen === item.correctIndex ? " correct" : " wrong";
+        } else if (chosen !== undefined) {
+          cls += " selected";
+        }
+
+        return `<button class="${cls}" onclick="goToQuestion(${idx})">${idx + 1}</button>`;
+      }).join("");
+    }
+
+    function renderAll() {
+      renderQuizBody();
+      renderStatsAndGrid();
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderAll();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < quizList.length - 1) {
+        currentIndex++;
+        renderAll();
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (viewStyle !== "single") return;
+      const item = quizList[currentIndex];
+      if (!item) return;
+
+      if (e.key === "ArrowLeft") prevQuestion();
+      else if (e.key === "ArrowRight") nextQuestion();
+      else if (["1", "2", "3", "4"].includes(e.key)) {
+        selectAnswer(item.id, Number(e.key) - 1);
+      } else if (e.key === "Enter" && !checkedMap[item.id]) {
+        e.preventDefault();
+        checkQuestion(item.id);
+      }
+    });
+
+    startQuiz();
+  </script>
+</body>
+</html>
